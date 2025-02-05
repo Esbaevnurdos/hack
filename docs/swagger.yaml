@@ -1,0 +1,161 @@
+basePath: /
+definitions:
+  main.Place:
+    properties:
+      comments:
+        items:
+          type: string
+        type: array
+      description:
+        type: string
+      id:
+        type: integer
+      photoURLs:
+        items:
+          type: string
+        type: array
+      placeName:
+        type: string
+      rating:
+        type: number
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for managing tourist places in Taraz
+  title: Taraz Places API
+  version: "1.0"
+paths:
+  /places:
+    get:
+      description: Returns a list of all places
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Place'
+            type: array
+      summary: Get all places
+    post:
+      consumes:
+      - application/json
+      description: Adds a new place to the list
+      parameters:
+      - description: Place data
+        in: body
+        name: place
+        required: true
+        schema:
+          $ref: '#/definitions/main.Place'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Place added
+          schema:
+            type: string
+      summary: Create a new place
+  /places/{id}:
+    delete:
+      description: Deletes a place by ID
+      parameters:
+      - description: Place ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Place deleted
+          schema:
+            type: string
+      summary: Delete a place
+    get:
+      description: Returns a place by its ID
+      parameters:
+      - description: Place ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Place'
+        "404":
+          description: Place not found
+          schema:
+            type: string
+      summary: Get place by ID
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing place by ID
+      parameters:
+      - description: Place ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated place data
+        in: body
+        name: place
+        required: true
+        schema:
+          $ref: '#/definitions/main.Place'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Place updated
+          schema:
+            type: string
+      summary: Update a place
+  /places/{id}/comment:
+    post:
+      description: Adds a comment to a place
+      parameters:
+      - description: Place ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Comment text
+        in: body
+        name: comment
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Comment added
+          schema:
+            type: string
+      summary: Add comment
+  /places/{id}/rate:
+    patch:
+      description: Updates the rating of a place
+      parameters:
+      - description: Place ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: New rating
+        in: query
+        name: rating
+        required: true
+        type: number
+      responses:
+        "200":
+          description: Rating updated
+          schema:
+            type: string
+      summary: Rate a place
+swagger: "2.0"

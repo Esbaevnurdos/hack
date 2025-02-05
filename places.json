@@ -1,0 +1,28 @@
+[
+  {
+    "id": 1,
+    "placeName": "string",
+    "rating": 0,
+    "description": "string",
+    "photoURLs": [
+      "string"
+    ],
+    "comments": [
+      "string"
+    ]
+  },
+  {
+    "id": 2,
+    "placeName": "hello",
+    "rating": 0,
+    "description": "hello",
+    "photoURLs": [
+      "hello"
+    ],
+    "comments": [
+      "hello",
+      "",
+      "asdf"
+    ]
+  }
+]
