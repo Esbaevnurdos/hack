@@ -10,11 +10,11 @@ import (
 	"sync"
 
 	"github.com/gorilla/handlers"
+	httpSwagger "github.com/swaggo/http-swagger"
 
 	_ "github.com/Esbaevnurdos/hack/docs" // Change 'your_project' to match your module name
 
 	"github.com/gorilla/mux"
-	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 // Place represents a tourist place
