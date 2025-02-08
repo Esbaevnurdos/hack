@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -56,15 +57,16 @@ r.HandleFunc("/places/{id}/rate", ratePlace).Methods("POST")
 r.HandleFunc("/places/{id}/comment", addComment).Methods("POST")
 r.HandleFunc("/places/{id}/photo", addPhoto).Methods("POST")
 
-r.PathPrefix("/swagger/").Handler(http.StripPrefix("/swagger/", httpSwagger.WrapHandler))
+	r.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
-corsMiddleware := handlers.CORS(
-    handlers.AllowedOrigins([]string{"*"}),
+	r.Use(handlers.CORS(
+    handlers.AllowedOrigins([]string{"*"}), // Adjust allowed origins as needed
     handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
     handlers.AllowedHeaders([]string{"Content-Type"}),
-)
-log.Fatal(http.ListenAndServe(":8080", corsMiddleware(r)))
+))
 
+	fmt.Println("Server running on port 8080...")
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
 
 func loadPlaces() {
