@@ -25,7 +25,10 @@ type Place struct {
 	Description string   `json:"description"`
 	PhotoURLs   []string `json:"photoURLs"`
 	Comments    []string `json:"comments"`
+	Latitude    float64  `json:"latitude"`
+	Longitude   float64  `json:"longitude"`
 }
+
 
 var (
 	places   []Place
@@ -36,8 +39,9 @@ var (
 // @title Taraz Places API
 // @version 1.0
 // @description API for managing tourist places in Taraz
-// @host localhost:8080
+// @host hack-zjzn.onrender.com
 // @BasePath /
+
 func main() {
 	loadPlaces()
 
@@ -132,7 +136,20 @@ if err != nil {
 // @Router /places [post]
 func createPlace(w http.ResponseWriter, r *http.Request) {
 	var newPlace Place
-	json.NewDecoder(r.Body).Decode(&newPlace)
+	if err := json.NewDecoder(r.Body).Decode(&newPlace); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	// Validate Latitude and Longitude
+	if newPlace.Latitude < -90 || newPlace.Latitude > 90 {
+		http.Error(w, "Invalid latitude value", http.StatusBadRequest)
+		return
+	}
+	if newPlace.Longitude < -180 || newPlace.Longitude > 180 {
+		http.Error(w, "Invalid longitude value", http.StatusBadRequest)
+		return
+	}
 
 	mutex.Lock()
 	newPlace.ID = len(places) + 1
@@ -143,6 +160,7 @@ func createPlace(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("Place added"))
 }
+
 
 // @Summary Update a place
 // @Description Updates an existing place by ID
@@ -166,17 +184,29 @@ func updatePlace(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Validate Latitude and Longitude
+	if updatedData.Latitude < -90 || updatedData.Latitude > 90 {
+		http.Error(w, "Invalid latitude value", http.StatusBadRequest)
+		return
+	}
+	if updatedData.Longitude < -180 || updatedData.Longitude > 180 {
+		http.Error(w, "Invalid longitude value", http.StatusBadRequest)
+		return
+	}
+
 	mutex.Lock()
 	defer mutex.Unlock()
 
 	for i, p := range places {
 		if p.ID == id {
-			// Keep the original ID
+			// Update fields
 			places[i].PlaceName = updatedData.PlaceName
 			places[i].Rating = updatedData.Rating
 			places[i].Description = updatedData.Description
 			places[i].PhotoURLs = updatedData.PhotoURLs
 			places[i].Comments = updatedData.Comments
+			places[i].Latitude = updatedData.Latitude
+			places[i].Longitude = updatedData.Longitude
 
 			savePlaces()
 			w.Write([]byte("Place updated"))
@@ -186,6 +216,7 @@ func updatePlace(w http.ResponseWriter, r *http.Request) {
 
 	http.Error(w, "Place not found", http.StatusNotFound)
 }
+
 
 
 // @Summary Delete a place
