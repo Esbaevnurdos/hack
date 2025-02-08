@@ -313,13 +313,14 @@ func addComment(w http.ResponseWriter, r *http.Request) {
         if p.ID == placeID {
             places[i].Comments = append(places[i].Comments, comment.Text)
             savePlaces()
-            w.Write([]byte("Comment added successfully!"))
+            w.Write([]byte("Comment added"))
             return
         }
     }
 
     http.Error(w, "Place not found", http.StatusNotFound)
 }
+
 
 // @Summary Add photo
 // @Description Adds a photo URL to a place
